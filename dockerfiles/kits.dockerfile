@@ -23,6 +23,13 @@ RUN sed -i.bac -re "s|https?://[^/]+/|${APT_MIRROR}|g" /etc/apt/sources.list \
     && apt-get clean autoclean autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
+# 安装 frp
+ADD share/frp/frp_0.46.1_linux_${ARCH}.tar.gz frp
+RUN mv frp/frp_0.46.1_linux_${ARCH}/frps /bin/frps && \
+    mv frp/frp_0.46.1_linux_${ARCH}/frpc /bin/frpc && \
+    rm -rf frp && \
+    chmod +x /bin/frps /bin/frpc
+
 # 安装 gost
 COPY share/gost/gost-linux-${ARCH}-2.11.5.gz gost.gz
 RUN gzip -d gost.gz && \
@@ -33,6 +40,7 @@ RUN gzip -d gost.gz && \
 COPY share/kubectl/kubectl-v1.26.1-linux-${ARCH} /bin/kubectl
 ADD share/helm/helm-v3.11.0-linux-${ARCH}.tar.gz helm/
 RUN mv helm/linux-${ARCH}/helm /bin/helm && \
+    rm -rf helm && \
     chmod +x /bin/kubectl /bin/helm
 
 ENTRYPOINT ["/bin/bash"]

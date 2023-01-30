@@ -1,3 +1,4 @@
+share/frp/* filter=lfs diff=lfs merge=lfs -text
 share/gost/* filter=lfs diff=lfs merge=lfs -text
 share/helm/* filter=lfs diff=lfs merge=lfs -text
 share/kubectl/* filter=lfs diff=lfs merge=lfs -text

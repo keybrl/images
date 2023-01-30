@@ -1,5 +1,8 @@
 # 镜像共享资源
 
+- `frp/` （参考 [fatedier/frp](https://github.com/fatedier/frp) ）
+  - [frp_0.46.1_linux_amd64.tar.gz](https://github.com/fatedier/frp/releases/download/v0.46.1/frp_0.46.1_linux_amd64.tar.gz) (sha256sum: `7c6208a3f7131802f24ad7bf7f02c760bba5c17443bdf328598d0758865f80df`)
+  - [frp_0.46.1_linux_arm64.tar.gz](https://github.com/fatedier/frp/releases/download/v0.46.1/frp_0.46.1_linux_arm64.tar.gz) (sha256sum: `76e5d42d4d2971de51de652417cfe38461ef9e18672e1070a1138910c8448a2f`)
 - `gost/` （参考 [ginuerzh/gost](https://github.com/ginuerzh/gost) ）
   - [gost-linux-amd64-2.11.5.gz](https://github.com/ginuerzh/gost/releases/download/v2.11.5/gost-linux-amd64-2.11.5.gz) (sha256sum: `3417fd178ef9f86a5bda4e56d90739411df9d9ff3657724abc5614bb32e50f4b` )
   - [gost-linux-arm64-2.11.5.gz](https://github.com/ginuerzh/gost/releases/download/v2.11.5/gost-linux-armv8-2.11.5.gz) (sha256sum: `9b606482837e1796009e1647994e7d6e2747c10ea577dd9a13e37b9b43a3fc40` )
