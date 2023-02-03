@@ -14,6 +14,8 @@ RUN sed -i.bac -re "s|https?://[^/]+/|${APT_MIRROR}|g" /etc/apt/sources.list \
     && apt-get clean autoclean autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
+ENV LC_ALL=C.utf8
+
 # kits
 FROM --platform=${TARGETPLATFORM} base AS kits
 
