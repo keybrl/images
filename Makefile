@@ -45,7 +45,7 @@ $(BUILD_TARGETS):
         --platform "linux/$${arch}" \
         -t "$(IMG_REPO):$(IMG_TAG)-$${arch}" \
         $(EXTRA_DOCKER_BUILD_ARGS) \
-        --target "$(IMG_NAME)" . && \
+        --target "$(IMG_NAME)" . || exit $$? ; \
       if [ "$${arch}" = "$(BUILD_ARCH)" ]; then \
         docker tag "$(IMG_REPO):$(IMG_TAG)-$${arch}" "$(IMG_REPO):$(IMG_TAG)" ; \
       fi ; \
