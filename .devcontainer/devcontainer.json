@@ -1,13 +1,19 @@
 {
-    "image": "docker.io/keybrl/devkits:latest",
-    "containerEnv": {
-        "DOCKER_HOST": "tcp://127.0.0.1:2375"
-	},
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"EditorConfig.EditorConfig"
-			]
-		}
-	}
+  "image": "docker.io/keybrl/devkits:latest",
+  "mounts": [{
+    "source": "/var/run/docker.sock",
+    "target": "/var/run/docker.sock",
+    "type": "bind"
+  }, {
+    "source": "${localEnv:HOME}/.ssh",
+    "target": "/root/.ssh",
+    "type": "bind"
+  }],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "EditorConfig.EditorConfig"
+      ]
+    }
+  }
 }
