@@ -1,0 +1,13 @@
+{
+    "image": "docker.io/keybrl/devkits:latest",
+    "containerEnv": {
+        "DOCKER_HOST": "tcp://127.0.0.1:2375"
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"EditorConfig.EditorConfig"
+			]
+		}
+	}
+}
