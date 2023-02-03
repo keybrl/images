@@ -1,12 +1,11 @@
-ARG BASE_IMG_PREFIX=""
-ARG BASE_IMG_SUFFIX=""
+ARG TARGETPLATFORM=linux/amd64
 
-FROM ${BASE_IMG_PREFIX}ubuntu:22.04${BASE_IMG_SUFFIX}
+FROM --platform=${TARGETPLATFORM} ubuntu:22.04
 
-ARG ARCH=amd64
+ARG TARGETARCH=amd64
 ARG APT_MIRROR=http://mirrors.tencent.com/
 
-LABEL maintainer="keyboard-l@outlook.com"
+LABEL repo="https://github.com/keybrl/images.git"
 
 WORKDIR /root
 
@@ -24,22 +23,22 @@ RUN sed -i.bac -re "s|https?://[^/]+/|${APT_MIRROR}|g" /etc/apt/sources.list \
     && rm -rf /var/lib/apt/lists/*
 
 # 安装 frp
-ADD share/frp/frp_0.46.1_linux_${ARCH}.tar.gz frp
-RUN mv frp/frp_0.46.1_linux_${ARCH}/frps /bin/frps && \
-    mv frp/frp_0.46.1_linux_${ARCH}/frpc /bin/frpc && \
+ADD share/frp/frp_0.46.1_linux_${TARGETARCH}.tar.gz frp
+RUN mv frp/frp_0.46.1_linux_${TARGETARCH}/frps /bin/frps && \
+    mv frp/frp_0.46.1_linux_${TARGETARCH}/frpc /bin/frpc && \
     rm -rf frp && \
     chmod +x /bin/frps /bin/frpc
 
 # 安装 gost
-COPY share/gost/gost-linux-${ARCH}-2.11.5.gz gost.gz
+COPY share/gost/gost-linux-${TARGETARCH}-2.11.5.gz gost.gz
 RUN gzip -d gost.gz && \
     mv gost /bin/gost && \
     chmod +x /bin/gost
 
 # 安装 kubectl, helm
-COPY share/kubectl/kubectl-v1.26.1-linux-${ARCH} /bin/kubectl
-ADD share/helm/helm-v3.11.0-linux-${ARCH}.tar.gz helm/
-RUN mv helm/linux-${ARCH}/helm /bin/helm && \
+COPY share/kubectl/kubectl-v1.26.1-linux-${TARGETARCH} /bin/kubectl
+ADD share/helm/helm-v3.11.0-linux-${TARGETARCH}.tar.gz helm/
+RUN mv helm/linux-${TARGETARCH}/helm /bin/helm && \
     rm -rf helm && \
     chmod +x /bin/kubectl /bin/helm
 

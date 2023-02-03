@@ -15,7 +15,6 @@ BUILDPUSH_TARGETS := \
 # 构建的信息
 IMG_REPO_BASE ?= keybrl
 IMG_REPO ?= $(IMG_REPO_BASE)/$(IMG_NAME)
-ARCH ?= amd64
 IMG_TAG ?= latest
 DOCKERFILE ?= dockerfiles/$(IMG_NAME).dockerfile
 
@@ -27,14 +26,22 @@ $(BUILD_TARGETS):
 	@echo Tag:  $(IMG_TAG)
 	@echo ============================================
 	cd $(WORKDIR) && docker buildx build \
-      --platform linux/$(ARCH) \
-	  --build-arg "ARCH=$(ARCH)" \
+      --platform linux/arm64 \
       -f "$(DOCKERFILE)" \
-      -t "$(IMG_REPO):$(IMG_TAG)" .
+      -t "$(IMG_REPO):$(IMG_TAG)-arm64" .
+	cd $(WORKDIR) && docker buildx build \
+      --platform linux/amd64 \
+      -f "$(DOCKERFILE)" \
+      -t "$(IMG_REPO):$(IMG_TAG)-amd64" .
 
 # 推送镜像
 $(PUSH_TARGETS):
-	docker push "$(IMG_REPO):$(IMG_TAG)"
+	docker push "$(IMG_REPO):$(IMG_TAG)-arm64"
+	docker push "$(IMG_REPO):$(IMG_TAG)-amd64"
+	docker manifest create --amend "$(IMG_REPO):$(IMG_TAG)" \
+      "$(IMG_REPO):$(IMG_TAG)-arm64" \
+      "$(IMG_REPO):$(IMG_TAG)-amd64"
+	docker manifest push "$(IMG_REPO):$(IMG_TAG)"
 
 # 构建推送镜像
 $(BUILDPUSH_TARGETS): buildpush-%: build-% push-%
