@@ -25,10 +25,13 @@ ARCHS ?= amd64 arm64
 BUILD_ARCH ?= $(shell docker version -f json | jq '.Server.Arch' -r)
 EXTRA_DOCKER_BUILD_ARGS ?=
 
-.PHONY: build-all
+.PHONY: build-all push-all buildpush-all
 build-all: $(BUILD_TARGETS)
+push-all: $(PUSH_TARGETS)
+buildpush-all: $(BUILDPUSH_TARGETS)
 
 # 构建镜像
+.PHONY: $(BUILD_TARGETS)
 $(BUILD_TARGETS):
 	@echo ================ Image Info ================
 	@echo Repo: $(IMG_REPO)
@@ -49,6 +52,7 @@ $(BUILD_TARGETS):
     done
 
 # 推送镜像
+.PHONY: $(PUSH_TARGETS)
 $(PUSH_TARGETS):
 	for arch in $(ARCHS); do \
       echo "Pushing image $(IMG_REPO):$(IMG_TAG)-$${arch} for linux/$${arch} platform ..." ; \
@@ -60,4 +64,5 @@ $(PUSH_TARGETS):
 	docker manifest push "$(IMG_REPO):$(IMG_TAG)"
 
 # 构建推送镜像
+.PHONY: $(BUILDPUSH_TARGETS)
 $(BUILDPUSH_TARGETS): buildpush-%: build-% push-%
