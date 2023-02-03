@@ -18,33 +18,42 @@ BUILDPUSH_TARGETS := \
 %-devkits-gui: IMG_NAME ?= devkits-gui
 
 # 构建的信息
-IMG_REPO_BASE ?= keybrl
+IMG_REPO_BASE ?= docker.io/keybrl
 IMG_REPO ?= $(IMG_REPO_BASE)/$(IMG_NAME)
 IMG_TAG ?= latest
 ARCHS ?= amd64 arm64
+BUILD_ARCH ?= $(shell docker version -f json | jq '.Server.Arch' -r)
+EXTRA_DOCKER_BUILD_ARGS ?=
 
 # 构建镜像
 $(BUILD_TARGETS):
 	@echo ================ Image Info ================
-	@echo Repo:      $(IMG_REPO)
-	@echo Tag:       $(IMG_TAG)
-	@echo Platforms: $(ARCHS)
+	@echo Repo: $(IMG_REPO)
+	@echo Tag:  $(IMG_TAG)
+	@echo Archs:      $(ARCHS)
+	@echo Build Arch: $(BUILD_ARCH)
 	@echo ============================================
 	for arch in $(ARCHS); do \
       echo "Building image $(IMG_REPO):$(IMG_TAG)-$${arch} for linux/$${arch} platform ..." ; \
       docker buildx build \
         --platform "linux/$${arch}" \
         -t "$(IMG_REPO):$(IMG_TAG)-$${arch}" \
-        --target "$(IMG_NAME)" . ; \
+        $(EXTRA_DOCKER_BUILD_ARGS) \
+        --target "$(IMG_NAME)" . && \
+      if [ "$${arch}" = "$(BUILD_ARCH)" ]; then \
+        docker tag "$(IMG_REPO):$(IMG_TAG)-$${arch}" "$(IMG_REPO):$(IMG_TAG)" ; \
+      fi ; \
     done
 
 # 推送镜像
 $(PUSH_TARGETS):
-	docker push "$(IMG_REPO):$(IMG_TAG)-arm64"
-	docker push "$(IMG_REPO):$(IMG_TAG)-amd64"
-	docker manifest create --amend "$(IMG_REPO):$(IMG_TAG)" \
-      "$(IMG_REPO):$(IMG_TAG)-arm64" \
-      "$(IMG_REPO):$(IMG_TAG)-amd64"
+	for arch in $(ARCHS); do \
+      echo "Pushing image $(IMG_REPO):$(IMG_TAG)-$${arch} for linux/$${arch} platform ..." ; \
+      docker push "$(IMG_REPO):$(IMG_TAG)-$${arch}" ; \
+      img_tags="$${img_tags} $(IMG_REPO):$(IMG_TAG)-$${arch}" ; \
+    done && \
+    docker manifest create --amend "$(IMG_REPO):$(IMG_TAG)" $${img_tags}
+	@echo "Pushing manifest list of the image $(IMG_REPO):$(IMG_TAG) ..."
 	docker manifest push "$(IMG_REPO):$(IMG_TAG)"
 
 # 构建推送镜像
