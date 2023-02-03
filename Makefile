@@ -25,6 +25,9 @@ ARCHS ?= amd64 arm64
 BUILD_ARCH ?= $(shell docker version -f json | jq '.Server.Arch' -r)
 EXTRA_DOCKER_BUILD_ARGS ?=
 
+.PHONY: build-all
+build-all: $(BUILD_TARGETS)
+
 # 构建镜像
 $(BUILD_TARGETS):
 	@echo ================ Image Info ================

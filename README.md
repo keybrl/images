@@ -8,5 +8,5 @@
 ## 构建
 
 ```shell
-make build-kits build-devkits
+make
 ```
