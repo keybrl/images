@@ -27,7 +27,7 @@ ARG TARGETARCH
 # - curl, wget, telnet, ssh, sshd
 # - iptables, ip, route
 # - ifconfig, dig, host, nslookup, ping
-# - docker-ce-cli
+# - docker vim
 RUN apt-get update -y \
     && echo "installing jq, sshpass ..." \
     && apt-get install -y jq sshpass \
@@ -39,6 +39,8 @@ RUN apt-get update -y \
     && apt-get install -y iptables iproute2 \
     && echo "installing ifconfig, dig, host, nslookup, ping ..." \
     && apt-get install -y net-tools dnsutils iputils-ping \
+    && echo "installing vim ..." \
+    && apt-get install -y vim \
     && echo "installing docker ..." \
     && apt-get install -y ca-certificates gnupg lsb-release \
     && mkdir -p /etc/apt/keyrings \
